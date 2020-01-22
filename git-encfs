@@ -7,8 +7,10 @@ echo ""
 echo "git encfs"
 echo ""
 echo "git encfs init - initialize a git-encfs repository"
-echo "git encfs lock - initialize a git-encfs repository"
-echo "git encfs unlock - initialize a git-encfs repository"
+echo "git encfs lock - locks a repository content, unmounting the encrypted volume"
+echo "git encfs unlock - mounts and decrypt the repo in a known folder"
+echo "git encfs stage - helper to stage all content of the git-encfs repo"
+
 echo ""
 }
 
@@ -68,7 +70,7 @@ if [ -d "$PWD/uncrypt" ]; then
 sudo umount $PWD/uncrypt
 rm -rf $PWD/uncrypt
 if [ -e "$PWD/.gitencfslock" ]; then
-rm  "$PWD/.gitencfslock" 
+rm "$PWD/.gitencfslock"
 fi
 fi
 exit 0
