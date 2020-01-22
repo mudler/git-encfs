@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+echo ""
+echo "git encfs"
+echo ""
+echo "git encfs init - initialize a git-encfs repository"
+echo "git encfs lock - initialize a git-encfs repository"
+echo "git encfs unlock - initialize a git-encfs repository"
+echo ""
+}
+
+while [[ $1 = ?* ]]; do
+case $1 in
+-i|init)
+if [ -e "$PWD/.gitencfs" ]; then
+echo "Repository already initialized"
+exit 1
+fi
+echo "Init git-encfs repository"
+
+
+git add .gitignore
+git add .gitencfs
+
+mkdir uncrypt
+encfs $PWD $PWD/uncrypt
+
+git add .encfs*.xml
+
+
+echo "uncrypt" >> .gitignore
+echo "uncrypt/*" >> .gitignore
+echo ".gitencfslock" >> .gitignore
+
+touch .gitencfs
+
+echo "Repository has been initialized, you should stage .gitignore, .gitencfs and .encfs*.xml files, e.g.:"
+echo "git add .gitignore .gitencfs .encfs*.xml"
+echo "The uncrypted repository content is mounted in $PWD/uncrypt."
+echo "You can treat this as a standard git repository and git add --all . and commit alike."
+echo "To unlock the repository and uncrypt run: git encfs unlock"
+echo "To lock the repo and unmount the encrypted content run: git encfs lock"
+echo "To stage changes, alternatively you can run: git encfs stage && git commit"
+
+exit 0
+;;
+stage)
+git add --all .
+exit 0
+;;
+unlock)
+if [ -e "$PWD/.gitencfslock" ]; then
+echo "Already mounted"
+exit 0
+fi
+if [ ! -d "$PWD/uncrypt" ]; then
+mkdir $PWD/uncrypt
+fi
+encfs $PWD $PWD/uncrypt
+touch $PWD/.gitencfslock
+exit 0
+;;
+lock)
+if [ -d "$PWD/uncrypt" ]; then
+sudo umount $PWD/uncrypt
+rm -rf $PWD/uncrypt
+if [ -e "$PWD/.gitencfslock" ]; then
+rm  "$PWD/.gitencfslock" 
+fi
+fi
+exit 0
+;;
+-h|--help)
+usage
+;;
+
+
+*) ;;
+esac
+shift
+done
