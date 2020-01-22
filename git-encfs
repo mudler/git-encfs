@@ -10,6 +10,7 @@ echo "git encfs init - initialize a git-encfs repository"
 echo "git encfs lock - locks a repository content, unmounting the encrypted volume"
 echo "git encfs unlock - mounts and decrypt the repo in a known folder"
 echo "git encfs stage - helper to stage all content of the git-encfs repo"
+echo "git encfs passwd - change encryption password the git-encfs repo"
 
 echo ""
 }
@@ -38,7 +39,8 @@ echo "uncrypt/*" >> .gitignore
 echo ".gitencfslock" >> .gitignore
 
 touch .gitencfs
-
+echo ""
+echo ""
 echo "Repository has been initialized, you should stage .gitignore, .gitencfs and .encfs*.xml files, e.g.:"
 echo "git add .gitignore .gitencfs .encfs*.xml"
 echo "The uncrypted repository content is mounted in $PWD/uncrypt."
@@ -46,11 +48,16 @@ echo "You can treat this as a standard git repository and git add --all . and co
 echo "To unlock the repository and uncrypt run: git encfs unlock"
 echo "To lock the repo and unmount the encrypted content run: git encfs lock"
 echo "To stage changes, alternatively you can run: git encfs stage && git commit"
+echo "To change repo password, you can run: git encfs passwd"
 
 exit 0
 ;;
 stage)
 git add --all .
+exit 0
+;;
+passwd)
+encfsctl passwd $PWD
 exit 0
 ;;
 unlock)
