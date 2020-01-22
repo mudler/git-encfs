@@ -25,20 +25,23 @@ fi
 echo "Init git-encfs repository"
 
 
-git add .gitignore
-git add .gitencfs
 
 mkdir uncrypt
 encfs $PWD $PWD/uncrypt
 
 git add .encfs*.xml
 
+if [ ! -e ".gitignore" ]; then
+touch ".gitignore"
+fi
 
 echo "uncrypt" >> .gitignore
 echo "uncrypt/*" >> .gitignore
 echo ".gitencfslock" >> .gitignore
 
 touch .gitencfs
+git add .gitignore
+git add .gitencfs
 echo ""
 echo ""
 echo "Repository has been initialized, you should stage .gitignore, .gitencfs and .encfs*.xml files, e.g.:"
